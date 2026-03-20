@@ -1,8 +1,20 @@
-# Planning File Templates
+# Planning file templates (reference)
 
-Copy these templates to your project root when starting complex tasks.
+Bootstrap copies the canonical templates from `assets/templates/` into `.kiro/plan/`. This page is a **compact reference** (inline skeletons) when you need to paste structure without opening those files.
 
-## task_plan.md Template
+To use as a Kiro **manual steering** document, copy this file to `.kiro/steering/planning-templates.md` and add front matter:
+
+```yaml
+---
+inclusion: manual
+name: planning-templates
+description: Markdown templates for task_plan, findings, and progress.
+---
+```
+
+---
+
+## task_plan.md
 
 ```markdown
 # Task Plan
@@ -38,7 +50,7 @@ Phase X: [Name] - [Status]
 |-------|---------|------------|
 ```
 
-## findings.md Template
+## findings.md
 
 ```markdown
 # Findings
@@ -61,7 +73,7 @@ Phase X: [Name] - [Status]
 - [Resource 2](url)
 ```
 
-## progress.md Template
+## progress.md
 
 ```markdown
 # Progress Log

@@ -154,15 +154,8 @@ IDE_MANIFESTS = {
         include_scripts=False,
     ),
 
-    ".kiro": {
-        # Kiro has a completely different structure (steering files, not SKILL.md)
-        # Only sync the scripts which live at .kiro/scripts/ (not under skills/)
-        "scripts/check-complete.sh": ".kiro/scripts/check-complete.sh",
-        "scripts/check-complete.ps1": ".kiro/scripts/check-complete.ps1",
-        "scripts/init-session.sh": ".kiro/scripts/init-session.sh",
-        "scripts/init-session.ps1": ".kiro/scripts/init-session.ps1",
-        # Steering files are IDE-specific, not synced
-    },
+    # Kiro: maintained under .kiro/ (skill + wrappers); not synced from canonical scripts/.
+    ".kiro": {},
 }
 
 

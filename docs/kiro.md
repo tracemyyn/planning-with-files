@@ -1,114 +1,101 @@
-# Kiro Setup
+# Kiro
 
-How to use planning-with-files with [Kiro](https://kiro.dev).
+Use **planning-with-files** with [Kiro](https://kiro.dev): **Agent Skills**, optional **Steering** (created by bootstrap), and on-disk markdown under `.kiro/plan/`.
 
----
+Official references:
 
-## Important: Kiro Uses Steering Files
-
-Kiro doesn't use the standard `SKILL.md` format. Instead, it uses **Steering Files** — markdown documents in `.kiro/steering/` that provide persistent project knowledge.
-
-See: [Kiro Steering Docs](https://kiro.dev/docs/cli/steering/)
+- [Agent Skills](https://kiro.dev/docs/skills/)
+- [Steering](https://kiro.dev/docs/steering/) (inclusion modes, `#[[file:path]]` live file references)
 
 ---
 
-## What This Integration Adds
+## What ships in this repo
+
+Only the workspace skill folder:
 
 ```
-.kiro/
-├── steering/
-│   ├── planning-workflow.md   # Core workflow and quick start
-│   ├── planning-rules.md      # Critical rules and error protocols
-│   └── planning-templates.md  # Templates for task_plan, findings, progress
-└── scripts/
-    ├── init-session.sh        # Initialize planning files (Bash)
-    ├── init-session.ps1       # Initialize planning files (PowerShell)
-    ├── check-complete.sh      # Verify phases complete (Bash)
-    └── check-complete.ps1     # Verify phases complete (PowerShell)
+.kiro/skills/planning-with-files/
+├── SKILL.md
+├── references/          # manus-principles, planning-rules, planning-templates
+└── assets/
+    ├── scripts/         # bootstrap, session-catchup, check-complete (.sh + .ps1 + .py)
+    └── templates/       # task_plan, findings, progress, planning-context (steering)
 ```
+
+Running **bootstrap** (from the project root) creates:
+
+| Path | Role |
+|------|------|
+| `.kiro/plan/task_plan.md` | Goal, phases, decisions, errors |
+| `.kiro/plan/findings.md` | Research and technical decisions |
+| `.kiro/plan/progress.md` | Session log |
+| `.kiro/steering/planning-context.md` | `inclusion: auto` + `#[[file:.kiro/plan/…]]` |
+
+Design note: **hooks are not installed by default.** Hooks are workspace-wide. This integration uses the skill, generated steering, and the `[Planning Active]` reminder in `SKILL.md`.
 
 ---
 
-## Installation (Workspace)
-
-Copy to your project:
+## Install into your project
 
 ```bash
 git clone https://github.com/OthmanAdi/planning-with-files.git
-cp -r planning-with-files/.kiro .kiro
-rm -rf planning-with-files
+mkdir -p .kiro/skills
+cp -r planning-with-files/.kiro/skills/planning-with-files ./.kiro/skills/
 ```
 
----
-
-## Installation (Global)
-
-Copy to your global Kiro config:
+Then from your **project root**:
 
 ```bash
-git clone https://github.com/OthmanAdi/planning-with-files.git
-mkdir -p ~/.kiro/steering ~/.kiro/scripts
-cp planning-with-files/.kiro/steering/* ~/.kiro/steering/
-cp planning-with-files/.kiro/scripts/* ~/.kiro/scripts/
-rm -rf planning-with-files
+sh .kiro/skills/planning-with-files/assets/scripts/bootstrap.sh
 ```
 
-Global steering applies to all your projects.
+Windows (PowerShell):
+
+```powershell
+pwsh -ExecutionPolicy Bypass -File .kiro/skills/planning-with-files/assets/scripts/bootstrap.ps1
+```
 
 ---
 
-## Usage
+## Import the skill in Kiro
 
-1. Start Kiro in your project
-2. For complex tasks, create the planning files:
+1. Open **Agent Steering & Skills** in the Kiro panel.  
+2. **Import a skill** → local folder → `.kiro/skills/planning-with-files`  
+3. Or copy that folder to `~/.kiro/skills/planning-with-files` for a **global** skill ([scope](https://kiro.dev/docs/skills/#skill-scope)).
+
+---
+
+## Scripts (under the skill)
+
+All paths are relative to the **project root** after you have copied `.kiro/skills/planning-with-files/` into the project.
+
+| Script | Purpose |
+|--------|---------|
+| `assets/scripts/bootstrap.sh` / `bootstrap.ps1` | Create `.kiro/plan/*` and `planning-context.md` (idempotent) |
+| `assets/scripts/session-catchup.py` | Print mtime + short summary of planning files |
+| `assets/scripts/check-complete.sh` / `check-complete.ps1` | Report phase completion vs `.kiro/plan/task_plan.md` |
+
+Examples:
 
 ```bash
-# Using the init script
-bash .kiro/scripts/init-session.sh
-
-# Or manually create:
-# - task_plan.md
-# - findings.md
-# - progress.md
+sh .kiro/skills/planning-with-files/assets/scripts/check-complete.sh
+$(command -v python3 || command -v python) \
+  .kiro/skills/planning-with-files/assets/scripts/session-catchup.py "$(pwd)"
 ```
 
-3. The steering files automatically guide Kiro to:
-   - Create plans before complex tasks
-   - Update findings after research
-   - Log progress and errors
-   - Follow the 3-strike error protocol
-
----
-
-## How Steering Works
-
-Kiro loads steering files automatically in every interaction. The planning guidance becomes part of Kiro's project understanding without you needing to explain it each time.
-
-| File | Purpose |
-|------|---------|
-| `planning-workflow.md` | Core pattern and quick start |
-| `planning-rules.md` | Critical rules and error handling |
-| `planning-templates.md` | Copy-paste templates |
-
----
-
-## Helper Scripts
-
-```bash
-# Initialize all planning files
-bash .kiro/scripts/init-session.sh
-
-# Windows PowerShell
-powershell -ExecutionPolicy Bypass -File .kiro/scripts/init-session.ps1
-
-# Verify all phases complete
-bash .kiro/scripts/check-complete.sh
+```powershell
+pwsh -File .kiro/skills/planning-with-files/assets/scripts/check-complete.ps1
+python .kiro/skills/planning-with-files/assets/scripts/session-catchup.py (Get-Location)
 ```
 
 ---
 
-## Notes
+## Manus-style context engineering
 
-- Steering files are loaded automatically — no manual invocation needed
-- Workspace steering (`.kiro/`) takes priority over global (`~/.kiro/`)
-- Planning files (`task_plan.md`, etc.) go in your project root, not in `.kiro/`
+The skill description and [references/manus-principles.md](../.kiro/skills/planning-with-files/references/manus-principles.md) document the **filesystem-as-memory** pattern discussed in Manus-style agent context engineering.
+
+---
+
+## Template reference
+
+See [references/planning-templates.md](../.kiro/skills/planning-with-files/references/planning-templates.md) for compact paste-friendly skeletons. To use them as **manual steering** in Kiro, copy that file into `.kiro/steering/` and add the YAML front matter described at the top of that file.
