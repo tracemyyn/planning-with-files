@@ -42,10 +42,11 @@ See the full list of everyone who made this project better in [CONTRIBUTORS.md](
 <details>
 <summary><strong>📦 Releases & Session Recovery</strong></summary>
 
-### Current Version: v2.29.0
+### Current Version: v2.30.0
 
 | Version | Highlights |
 |---------|------------|
+| **v2.30.0** | Migrate to `${CLAUDE_SKILL_DIR}`, IDE configs moved to dedicated branches, cleaner master |
 | **v2.29.0** | Analytics workflow template: `--template analytics` flag for data exploration sessions (thanks @mvanhorn!) |
 | **v2.28.0** | Traditional Chinese (zh-TW) skill variant (thanks @waynelee2048!) |
 | **v2.26.2** | Fix: `---` in hook commands broke YAML frontmatter parsing, hooks now register correctly |
@@ -90,37 +91,42 @@ When your context fills up and you run `/clear`, this skill **automatically reco
 </details>
 
 <details>
-<summary><strong>🛠️ Supported IDEs (16+ Platforms)</strong></summary>
+<summary><strong>🛠️ Supported Platforms (16+)</strong></summary>
 
-#### Enhanced Support (hooks + lifecycle automation)
+#### All platforms
 
-These IDEs have dedicated hook configurations that automatically re-read your plan before tool use, remind you to update progress, and verify completion before stopping:
+The core skill works with any IDE supporting the [Agent Skills](https://agentskills.io) open spec:
 
-| IDE | Installation Guide | Integration |
-|-----|-------------------|-------------|
-| Claude Code | [Installation](docs/installation.md) | Plugin + SKILL.md + Hooks |
-| Cursor | [Cursor Setup](docs/cursor.md) | Skills + [hooks.json](https://cursor.com/docs/hooks) |
-| GitHub Copilot | [Copilot Setup](docs/copilot.md) | [Hooks](https://docs.github.com/en/copilot/reference/hooks-configuration) (incl. errorOccurred) |
-| Mastra Code | [Mastra Setup](docs/mastra.md) | Skills + [Hooks](https://mastra.ai/docs/mastra-code/configuration) |
-| Gemini CLI | [Gemini Setup](docs/gemini.md) | Skills + [Hooks](https://geminicli.com/docs/hooks/) |
-| Kiro | [Kiro Setup](docs/kiro.md) | [Agent Skills](https://kiro.dev/docs/skills/) |
-| Codex | [Codex Setup](docs/codex.md) | [Skills + Hooks](https://developers.openai.com/codex/skills) |
-| CodeBuddy | [CodeBuddy Setup](docs/codebuddy.md) | [Skills + Hooks](https://www.codebuddy.ai/docs/cli/skills) |
-| FactoryAI Droid | [Factory Setup](docs/factory.md) | [Skills + Hooks](https://docs.factory.ai/cli/configuration/skills) |
-| OpenCode | [OpenCode Setup](docs/opencode.md) | Skills + Custom session storage |
+```bash
+npx skills add OthmanAdi/planning-with-files --skill planning-with-files -g
+```
 
-#### Standard Agent Skills Support
+This covers Claude Code, Cursor, Codex, Gemini CLI, OpenClaw, Antigravity, Kilocode, AdaL CLI, and 40+ other agents.
 
-These IDEs implement the [Agent Skills](https://agentskills.io) open specification. Install with `npx skills add` — the installer places the skill in each IDE's discovery path automatically:
+#### IDE-specific hooks and configurations
 
-| IDE | Installation Guide | Skill Discovery Path |
-|-----|-------------------|---------------------|
-| Continue | [Continue Setup](docs/continue.md) | `.continue/skills/` + [.prompt files](https://docs.continue.dev/customize/deep-dives/prompts) |
-| Pi Agent | [Pi Agent Setup](docs/pi-agent.md) | `.pi/skills/` ([npm package](https://www.npmjs.com/package/@mariozechner/pi-coding-agent)) |
-| OpenClaw | [OpenClaw Setup](docs/openclaw.md) | `.openclaw/skills/` ([docs](https://docs.openclaw.ai/tools/skills)) |
-| Antigravity | [Antigravity Setup](docs/antigravity.md) | `.agent/skills/` ([docs](https://codelabs.developers.google.com/getting-started-with-antigravity-skills)) |
-| Kilocode | [Kilocode Setup](docs/kilocode.md) | `.kilocode/skills/` ([docs](https://kilo.ai/docs/agent-behavior/skills)) |
-| AdaL CLI (Sylph AI) | [AdaL Setup](docs/adal.md) | `.adal/skills/` ([docs](https://docs.sylph.ai/features/plugins-and-skills)) |
+For IDEs with lifecycle hooks (pre-tool, post-tool, stop verification), each IDE has its own branch with adapted SKILL.md and hook scripts:
+
+| IDE | Branch | Guide | Integration |
+|-----|--------|-------|-------------|
+| Claude Code | `master` (built-in) | [Installation](docs/installation.md) | Plugin + SKILL.md + Hooks |
+| Cursor | [`ide/cursor`](../../tree/ide/cursor) | [Setup](docs/cursor.md) | Skills + [hooks.json](https://cursor.com/docs/hooks) |
+| GitHub Copilot | [`ide/copilot`](../../tree/ide/copilot) | [Setup](docs/copilot.md) | [Hooks](https://docs.github.com/en/copilot/reference/hooks-configuration) |
+| Gemini CLI | [`ide/gemini`](../../tree/ide/gemini) | [Setup](docs/gemini.md) | Skills + [Hooks](https://geminicli.com/docs/hooks/) |
+| Kiro | [`ide/kiro`](../../tree/ide/kiro) | [Setup](docs/kiro.md) | [Agent Skills](https://kiro.dev/docs/skills/) |
+| Codex | [`ide/codex`](../../tree/ide/codex) | [Setup](docs/codex.md) | [Skills + Hooks](https://developers.openai.com/codex/skills) |
+| Mastra Code | [`ide/mastra`](../../tree/ide/mastra) | [Setup](docs/mastra.md) | Skills + [Hooks](https://mastra.ai/docs/mastra-code/configuration) |
+| CodeBuddy | [`ide/codebuddy`](../../tree/ide/codebuddy) | [Setup](docs/codebuddy.md) | [Skills + Hooks](https://www.codebuddy.ai/docs/cli/skills) |
+| FactoryAI Droid | [`ide/factory`](../../tree/ide/factory) | [Setup](docs/factory.md) | [Skills + Hooks](https://docs.factory.ai/cli/configuration/skills) |
+| OpenCode | [`ide/opencode`](../../tree/ide/opencode) | [Setup](docs/opencode.md) | Skills + Custom session storage |
+| Continue | [`ide/continue`](../../tree/ide/continue) | [Setup](docs/continue.md) | Skills + [.prompt files](https://docs.continue.dev/customize/deep-dives/prompts) |
+| Pi Agent | [`ide/pi-agent`](../../tree/ide/pi-agent) | [Setup](docs/pi-agent.md) | Skills ([npm](https://www.npmjs.com/package/@mariozechner/pi-coding-agent)) |
+
+#### Standard Agent Skills support (no branch needed)
+
+These IDEs work with `npx skills add` out of the box, no IDE-specific branch required:
+
+[OpenClaw](docs/openclaw.md) | [Antigravity](docs/antigravity.md) | [Kilocode](docs/kilocode.md) | [AdaL CLI](docs/adal.md)
 
 > **Note:** If your IDE uses the legacy Rules system instead of Skills, see the [`legacy-rules-support`](https://github.com/OthmanAdi/planning-with-files/tree/legacy-rules-support) branch.
 
@@ -131,9 +137,32 @@ These IDEs implement the [Agent Skills](https://agentskills.io) open specificati
 
 | Runtime | Status | Guide | Notes |
 |---------|--------|-------|-------|
-| BoxLite | ✅ Documented | [BoxLite Setup](docs/boxlite.md) | Run Claude Code + planning-with-files inside hardware-isolated micro-VMs |
+| BoxLite | Documented | [BoxLite Setup](docs/boxlite.md) | Run Claude Code + planning-with-files inside hardware-isolated micro-VMs |
 
-> **Note:** BoxLite is a sandbox runtime, not an IDE. Skills load via [ClaudeBox](https://github.com/boxlite-ai/claudebox) — BoxLite’s official Claude Code integration layer.
+> **Note:** BoxLite is a sandbox runtime, not an IDE. Skills load via [ClaudeBox](https://github.com/boxlite-ai/claudebox) -- BoxLite’s official Claude Code integration layer.
+
+</details>
+
+<details>
+<summary><strong>🌿 Branches</strong></summary>
+
+| Branch | Purpose |
+|--------|---------|
+| `master` | Core skill, templates, scripts, docs |
+| `ide/cursor` | Cursor IDE hooks and SKILL.md |
+| `ide/copilot` | GitHub Copilot hooks |
+| `ide/gemini` | Gemini CLI hooks and SKILL.md |
+| `ide/kiro` | Kiro Agent Skill layout |
+| `ide/codex` | Codex CLI hooks and SKILL.md |
+| `ide/mastra` | Mastra Code hooks and SKILL.md |
+| `ide/codebuddy` | CodeBuddy hooks and SKILL.md |
+| `ide/factory` | FactoryAI Droid hooks and SKILL.md |
+| `ide/opencode` | OpenCode hooks and SKILL.md |
+| `ide/continue` | Continue.dev skill and prompts |
+| `ide/pi-agent` | Pi Agent skill |
+| `feat/analytics-subagent` | Analytics subagent (closes #103) |
+| `experimental/isolated-planning` | Parallel planning sessions |
+| `legacy-rules-support` | IDE Rules system (pre-Skills) |
 
 </details>
 
@@ -309,77 +338,29 @@ Formally evaluated using Anthropic's [skill-creator](https://github.com/anthropi
 ## File Structure
 
 ```
-planning-with-files/
-├── commands/                # Plugin commands
-│   ├── plan.md              # /planning-with-files:plan command (v2.11.0+)
-│   └── start.md             # /planning-with-files:start command
-├── templates/               # Root-level templates (for CLAUDE_PLUGIN_ROOT)
-├── scripts/                 # Root-level scripts (for CLAUDE_PLUGIN_ROOT)
-├── docs/                    # Documentation
-│   ├── installation.md
-│   ├── quickstart.md
-│   ├── workflow.md
-│   ├── troubleshooting.md
-│   ├── gemini.md            # Gemini CLI setup
-│   ├── cursor.md
-│   ├── windows.md
-│   ├── kilocode.md
-│   ├── codex.md
-│   ├── opencode.md
-│   ├── mastra.md             # Mastra Code setup
-│   └── boxlite.md            # BoxLite sandbox setup
-├── examples/                # Integration examples
-│   └── boxlite/             # BoxLite quickstart
-│       ├── README.md
-│       └── quickstart.py
-├── planning-with-files/     # Plugin skill folder
-│   ├── SKILL.md
-│   ├── templates/
-│   └── scripts/
-├── skills/                  # Legacy skill folder
-│   └── planning-with-files/
-│       ├── SKILL.md
-│       ├── examples.md
-│       ├── reference.md
-│       ├── templates/
-│       └── scripts/
-│           ├── init-session.sh
-│           ├── check-complete.sh
-│           ├── init-session.ps1   # Windows PowerShell
-│           └── check-complete.ps1 # Windows PowerShell
-├── .gemini/                 # Gemini CLI skills + hooks
-│   ├── settings.json        # Hook configuration (v2.26.0)
-│   ├── hooks/               # Hook scripts (SessionStart, BeforeTool, AfterTool, BeforeModel, SessionEnd)
-│   └── skills/
-│       └── planning-with-files/
-├── .codex/                  # Codex CLI skills + hooks
-│   └── skills/
-├── .opencode/               # OpenCode skills (custom session storage)
-│   └── skills/
-├── .claude-plugin/          # Plugin manifest
-├── .cursor/                 # Cursor skills + hooks
-│   ├── hooks.json           # Hook configuration
-│   ├── hooks/               # Hook scripts (bash + PowerShell)
-│   └── skills/
-├── .codebuddy/              # CodeBuddy skills + hooks
-│   └── skills/
-├── .factory/                # FactoryAI Droid skills + hooks (v2.26.0)
-│   └── skills/
-├── .pi/                     # Pi Agent skills (npm package)
-│   └── skills/
-│       └── planning-with-files/
-├── .continue/               # Continue.dev skills + prompt files
-│   ├── prompts/             # .prompt file for slash commands
-│   └── skills/
-├── .github/                 # GitHub Copilot hooks (incl. errorOccurred)
-│   └── hooks/
-│       ├── planning-with-files.json  # Hook configuration
-│       └── scripts/         # Hook scripts (bash + PowerShell)
-├── .mastracode/             # Mastra Code skills + hooks
-│   └── skills/
+planning-with-files/          (master branch)
+├── skills/
+│   ├── planning-with-files/  # Core skill
+│   │   ├── SKILL.md
+│   │   ├── examples.md
+│   │   ├── reference.md
+│   │   ├── templates/
+│   │   └── scripts/
+│   ├── planning-with-files-zh/   # Chinese (Simplified)
+│   └── planning-with-files-zht/  # Chinese (Traditional)
+├── commands/                 # Plugin commands (/plan, /start)
+├── templates/                # Root-level templates
+├── scripts/                  # Root-level scripts
+├── docs/                     # All platform setup guides
+├── examples/                 # Integration examples
+├── tests/                    # Test suite
+├── .claude-plugin/           # Plugin manifest
 ├── CHANGELOG.md
+├── CONTRIBUTORS.md
 ├── LICENSE
 └── README.md
+
+IDE-specific configs live on dedicated branches (ide/cursor, ide/copilot, etc.)
 ```
 
 ## Documentation
